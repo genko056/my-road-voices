@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Голос из прошлого</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #000;
+      color: #fff;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      text-align: center;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .content {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    h2 {
+      font-size: 1.6em;
+      margin: 0 0 20px;
+      font-weight: 400;
+    }
+    .text {
+      font-size: 1.3em;
+      margin-bottom: 25px;
+      opacity: 0.9;
+    }
+    .player {
+      width: 90%;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1.1em;
+      background: #e00;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover { background: #c00; }
+  </style>
+</head>
+<body>
+  <div class="content">
+    <h2>Ты услышал меня?</h2>
+    <div class="text">Привет. Я Дима из Самары. Две недели назад я как ты заправился здесь и поехал на 120. Теперь я не хочу. Выезжая на встречку, я думал: «Со мной не случится». Случилось.</div>
+    
+    <audio class="player" id="audio" controls>
+      <source src="https://raw.githubusercontent.com/genko056/my-road-voices/main/dima.mp3" type="audio/mpeg">
+      Ваш браузер не поддерживает аудио.
+    </audio>
+
+    <button onclick="playAudio()">Прослушать ещё раз</button>
+  </div>
+
+  <script>
+    const audio = document.getElementById('audio');
+
+    function playAudio() {
+      audio.currentTime = 0;
+      audio.play().catch(e => {
+        console.log("Автовоспроизведение заблокировано. Нажмите кнопку.");
+      });
+    }
+
+    // Попытка автовоспроизведения при клике на страницу (обход ограничений)
+    document.body.addEventListener('click', playAudio, { once: true });
+  </script>
+</body>
+</html>
