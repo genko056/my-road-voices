@@ -2,79 +2,76 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
   <title>Голос из прошлого</title>
   <style>
     body {
       margin: 0;
-      padding: 20px;
+      padding: 0;
       background: #000;
       color: #fff;
       font-family: 'Segoe UI', Tahoma, sans-serif;
       text-align: center;
-      line-height: 1.6;
-      min-height: 100vh;
+      height: 100vh;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .screen {
       display: flex;
       flex-direction: column;
       justify-content: center;
-    }
-    .content {
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    h2 {
-      font-size: 1.6em;
-      margin: 0 0 20px;
-      font-weight: 400;
+      align-items: center;
+      height: 100%;
+      padding: 20px;
+      box-sizing: border-box;
     }
     .text {
-      font-size: 1.3em;
-      margin-bottom: 25px;
+      font-size: 1.4em;
+      max-width: 500px;
+      line-height: 1.5;
+      margin-bottom: 30px;
       opacity: 0.9;
     }
-    .player {
-      width: 90%;
-      max-width: 400px;
-      margin: 0 auto;
-    }
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
+    .hint {
       font-size: 1.1em;
-      background: #e00;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
+      color: #ff6b6b;
+      animation: pulse 2s infinite;
+      margin-top: 20px;
     }
-    button:hover { background: #c00; }
+    @keyframes pulse {
+      0% { opacity: 0.6; }
+      50% { opacity: 1; }
+      100% { opacity: 0.6; }
+    }
   </style>
 </head>
 <body>
-  <div class="content">
-    <h2>Ты услышал меня?</h2>
+  <div class="screen" id="screen">
     <div class="text">Привет. Я Дима из Самары. Две недели назад я как ты заправился здесь и поехал на 120. Теперь я не хочу. Выезжая на встречку, я думал: «Со мной не случится». Случилось.</div>
-    
-    <audio class="player" id="audio" controls>
-      <source src="https://raw.githubusercontent.com/genko056/my-road-voices/main/dima.mp3" type="audio/mpeg">
-      Ваш браузер не поддерживает аудио.
-    </audio>
-
-    <button onclick="playAudio()">Прослушать ещё раз</button>
+    <div class="hint">👆 Коснись экрана, чтобы услышать меня</div>
   </div>
+
+  <audio id="audio" src="https://raw.githubusercontent.com/genko056/my-road-voices/main/dima.mp3"></audio>
 
   <script>
     const audio = document.getElementById('audio');
+    const screen = document.getElementById('screen');
 
-    function playAudio() {
+    function playVoice() {
       audio.currentTime = 0;
-      audio.play().catch(e => {
-        console.log("Автовоспроизведение заблокировано. Нажмите кнопку.");
-      });
+      audio.play()
+        .then(() => {
+          // Убираем подсказку после успешного воспроизведения
+          document.querySelector('.hint').style.display = 'none';
+        })
+        .catch(e => {
+          console.log("Ошибка воспроизведения:", e);
+        });
     }
 
-    // Попытка автовоспроизведения при клике на страницу (обход ограничений)
-    document.body.addEventListener('click', playAudio, { once: true });
+    // Любое касание или клик — запускает голос
+    screen.addEventListener('click', playVoice, { once: true });
+    screen.addEventListener('touchstart', playVoice, { once: true });
   </script>
 </body>
 </html>
