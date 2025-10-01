@@ -5,73 +5,69 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
   <title>Голос из прошлого</title>
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      margin: 0;
-      padding: 0;
       background: #000;
       color: #fff;
-      font-family: 'Segoe UI', Tahoma, sans-serif;
-      text-align: center;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       height: 100vh;
       overflow: hidden;
       cursor: pointer;
-    }
-    .screen {
+      text-align: center;
+      padding: 20px;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      align-items: center;
-      height: 100%;
-      padding: 20px;
-      box-sizing: border-box;
+    }
+    .content {
+      max-width: 560px;
+      margin: 0 auto;
     }
     .text {
-      font-size: 1.4em;
-      max-width: 500px;
+      font-size: 1.5em;
       line-height: 1.5;
       margin-bottom: 30px;
-      opacity: 0.9;
+      font-weight: 300;
     }
     .hint {
-      font-size: 1.1em;
-      color: #ff6b6b;
-      animation: pulse 2s infinite;
-      margin-top: 20px;
+      font-size: 1.2em;
+      color: #ff5555;
+      animation: pulse 1.8s infinite;
+      font-weight: 400;
     }
     @keyframes pulse {
-      0% { opacity: 0.6; }
+      0%, 100% { opacity: 0.5; }
       50% { opacity: 1; }
-      100% { opacity: 0.6; }
     }
+    audio { display: none; }
   </style>
 </head>
 <body>
-  <div class="screen" id="screen">
+  <div class="content">
     <div class="text">Привет. Я Дима из Самары. Две недели назад я как ты заправился здесь и поехал на 120. Теперь я не хочу. Выезжая на встречку, я думал: «Со мной не случится». Случилось.</div>
-    <div class="hint">👆 Коснись экрана, чтобы услышать меня</div>
+    <div class="hint">👆 Коснись экрана. Это мой голос.</div>
   </div>
 
-  <audio id="audio" src="https://raw.githubusercontent.com/genko056/my-road-voices/main/dima.mp3"></audio>
+  <audio id="voice" src="https://raw.githubusercontent.com/genko056/my-road-voices/main/dima.mp3" preload="auto"></audio>
 
   <script>
-    const audio = document.getElementById('audio');
-    const screen = document.getElementById('screen');
+    const voice = document.getElementById('voice');
+    const body = document.body;
 
     function playVoice() {
-      audio.currentTime = 0;
-      audio.play()
-        .then(() => {
-          // Убираем подсказку после успешного воспроизведения
-          document.querySelector('.hint').style.display = 'none';
-        })
-        .catch(e => {
-          console.log("Ошибка воспроизведения:", e);
-        });
+      voice.currentTime = 0;
+      voice.play().catch(e => console.log("Blocked:", e));
+      document.querySelector('.hint').style.display = 'none';
+      body.style.cursor = 'default';
     }
 
-    // Любое касание или клик — запускает голос
-    screen.addEventListener('click', playVoice, { once: true });
-    screen.addEventListener('touchstart', playVoice, { once: true });
+    // Запуск при любом взаимодействии
+    ['click', 'touchstart', 'keydown'].forEach(event => {
+      body.addEventListener(event, playVoice, { once: true, passive: true });
+    });
+
+    // Предзагрузка аудио для мгновенного старта
+    voice.load();
   </script>
 </body>
 </html>
